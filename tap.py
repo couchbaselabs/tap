@@ -51,25 +51,18 @@ class TAP(object):
 
                 rv, cmd, vbucket_id, key, flg, exp, cas, meta, val, \
                     opaque, need_ack = self.read_tap_conn(self.tap_conn)
+
                 if rv != 0:
                     self.tap_done = True
                     return rv, batch
 
-                if (cmd == Constants.CMD_TAP_MUTATION or
-                        cmd == Constants.CMD_TAP_DELETE):
+                if cmd == Constants.CMD_TAP_MUTATION:
                     if not False:
                         msg = (cmd, vbucket_id, key, flg, exp, cas, meta, val)
                         batch.append(msg, len(val))
                         self.num_msg += 1
-                    if cmd == Constants.CMD_TAP_DELETE:
-                        batch.adjust_size += 1
                 elif cmd == Constants.CMD_TAP_OPAQUE:
                     pass
-                elif cmd == Constants.CMD_NOOP:
-                    if (self.cmd_last == Constants.CMD_NOOP and
-                            self.num_msg == 0 and batch.size() <= 0):
-                        self.tap_done = True
-                        return 0, batch
                 else:
                     return 'Unexpected TAP message'
 
