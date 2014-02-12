@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import random
 import socket
 import string
